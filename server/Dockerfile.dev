@@ -1,0 +1,23 @@
+FROM node:18.7.0
+
+WORKDIR /usr/src/server
+
+# Debe hacer referencia al puerto dentro del container
+ENV SERVER_PORT=3000
+ENV LOCALHOST_PORT=3032
+
+ENV DB_HOST=control-db
+ENV DB_DIALECT=mysql
+
+ENV DB_USER=root
+ENV DB_PASSWORD=123456
+
+ENV DB_PORT=3306
+
+ENV DB_NAME=LabRem_Control
+
+RUN npm install -g nodemon
+
+EXPOSE 3000
+
+CMD npm run dev

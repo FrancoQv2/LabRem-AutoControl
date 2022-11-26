@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  db:
+    container_name: control-db
+    image: mysql:8.0.30
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+      - TZ=America/Buenos_Aires
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    volumes:
+      - ../volumenes/control-db:/var/lib/mysql
+    networks:
+      labrem:
+        aliases:
+          - control-db
+  server:
+    depends_on:
+      - db
+    container_name: control-dev
+    build:
+      context: server
+      dockerfile: ./server/Dockerfile.dev
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      # - $SERVER_LOCAL_TEST_PORT:$SERVER_DOCKER_PORT
+      - 3031:3000
+    environment:
+      - DB_HOST=$DB_HOST
+      - DB_DIALECT=$DB_DIALECT
+      - SERVER_PORT=$SERVER_DOCKER_PORT
+      - DB_USER=$MYSQLDB_USER
+      - DB_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - DB_NAME=$MYSQLDB_DATABASE
+      - DB_PORT=$MYSQLDB_DOCKER_PORT
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./src:/usr/src
+    networks:
+      labrem:
+        aliases:
+          - control-dev
+networks:
+  labrem:
+    name: labrem-net
+    driver: bridge
+    ipam:
+      driver: default
