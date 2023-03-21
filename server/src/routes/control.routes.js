@@ -3,8 +3,8 @@ import { controlController } from "../controllers/control.controller.js";
 import { estroboscopicoController } from "../controllers/estroboscopico.controller.js";
 import { posicionController } from "../controllers/posicion.controller.js";
 
-const { getLaboratorios, getLaboratorioById, getEnsayosUsuario } = controlController;
-const { postLabEstroboscopico, getEnsayosEstroboscopico } = estroboscopicoController;
+const { getLaboratorios, getLaboratorioById, getEnsayosUsuario, getEnsayos, getDeleteEnsayo, getDeleteLaboratorio, postModLab, postArduino, GetArduino } = controlController;
+const { postLabEstroboscopico} = estroboscopicoController;
 const { postLabPosicion, getEnsayosPosicion } = posicionController;
 
 const controlRouter = express.Router();
@@ -18,7 +18,9 @@ controlRouter.route("/").get(getLaboratorios);
 
 controlRouter.route("/posicion").get(getEnsayosPosicion).post(postLabPosicion);
 
-controlRouter.route("/estroboscopico").get(getEnsayosEstroboscopico).post(postLabEstroboscopico);
+controlRouter.route("/estroboscopico").post(postLabEstroboscopico);
+
+controlRouter.route("/modificarLab").post(postModLab); //para el grupo de gestion
 
 /**
  * -----------------------------------------------------
@@ -27,9 +29,13 @@ controlRouter.route("/estroboscopico").get(getEnsayosEstroboscopico).post(postLa
  */
 controlRouter.route("/:idLaboratorio").get(getLaboratorioById);
 
-controlRouter.route("/posicion/:idUsuario").get(getEnsayosUsuario);
+controlRouter.route("/delete/ensayo/:idEnsayo").get(getDeleteEnsayo); //para el grupo de gestion
 
-controlRouter.route("/estroboscopico/:idUsuario").get(getEnsayosUsuario);
+controlRouter.route("/delete/laboratorio/:idLaboratorio").get(getDeleteLaboratorio); //para el grupo de gestion
+
+controlRouter.route("/ensayos/:idLaboratorio").get(getEnsayos); //para el grupo de gestion
+
+controlRouter.route("/arduino/:id").post(postArduino).get(GetArduino);
 
 controlRouter.route("/:idLaboratorio/:idUsuario").get(getEnsayosUsuario);
 

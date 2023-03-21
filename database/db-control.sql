@@ -16,12 +16,12 @@ USE LabRem_Control;
 DROP TABLE IF EXISTS Laboratorios;
 
 CREATE TABLE IF NOT EXISTS Laboratorios (
-  idLaboratorio INT NOT NULL AUTO_INCREMENT,
-  area VARCHAR(50) NOT NULL DEFAULT 'Sistemas de control automaticos',
+  codLaboratorio INT NOT NULL AUTO_INCREMENT,
+  area VARCHAR(50) NOT NULL DEFAULT 'automatización y control',
   nombre VARCHAR(100) NOT NULL,
   imagen VARCHAR(200) NULL,
   descripcion VARCHAR(3000) NULL,
-  PRIMARY KEY (idLaboratorio),
+  PRIMARY KEY (codLaboratorio),
   UNIQUE INDEX UI_Laboratorios_nombre (nombre) VISIBLE
 ) ENGINE = InnoDB;
 
@@ -37,15 +37,46 @@ CREATE TABLE IF NOT EXISTS Ensayos (
   fechaHora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   datosEntrada JSON NULL,
   datosSalida JSON NULL,
-  idLaboratorio INT NOT NULL,
-  PRIMARY KEY (idEnsayo, idUsuario, idLaboratorio),
-  INDEX fk_Ensayos_Laboratorios_idx (idLaboratorio ASC) VISIBLE,
+  codLaboratorio INT NOT NULL,
+  PRIMARY KEY (idEnsayo, idUsuario, codLaboratorio),
+  INDEX fk_Ensayos_Laboratorios_idx (codLaboratorio ASC) VISIBLE,
   CONSTRAINT fk_Ensayos_Laboratorios
-    FOREIGN KEY (idLaboratorio)
-    REFERENCES Laboratorios (idLaboratorio)
+    FOREIGN KEY (codLaboratorio)
+    REFERENCES Laboratorios (codLaboratorio)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 ) ENGINE = InnoDB;
+
+DROP TABLE IF EXISTS auditoriaEmpleados;
+CREATE TABLE auditoriaEnsayos (
+  `idLinea` int NOT NULL AUTO_INCREMENT,
+  `tipo` char(1) NOT NULL,
+  `fechaHora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user` varchar(60) NOT NULL,
+  `host` varchar(60) NOT NULL,
+  `idEnsayo` int NOT NULL,
+  `idUsuario` int NOT NULL,
+  `fechaHoraE` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `codLaboratorio` varchar(6) NOT NULL,
+  `datosEntrada` JSON,
+  `datosSalida` JSON,
+  PRIMARY KEY (`idLinea`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+DROP TABLE IF EXISTS auditoriaLaboratorios;
+CREATE TABLE auditoriaLaboratorios (
+  `idLinea` int NOT NULL AUTO_INCREMENT,
+  `tipo` char(1) NOT NULL,
+  `fechaHora` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user` varchar(60) NOT NULL,
+  `host` varchar(60) NOT NULL,
+  `codLaboratorio` varchar(6) NOT NULL,
+  `area` varchar(50) NOT NULL,
+  `nombre` VARCHAR(100) NOT NULL,
+  `imagen` VARCHAR(200) NOT NULL,
+  `descripcion` VARCHAR(3000) NOT NULL,
+  PRIMARY KEY (`idLinea`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

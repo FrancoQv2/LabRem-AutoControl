@@ -14,6 +14,6 @@
 
 # alias recompose-teleco='/home/francoq/labrem/teleco/scripts/recompose.sh && /home/francoq/labrem/teleco/scripts/create-db.sh'
 
-docker compose down --volumes
+docker compose down
 docker rmi teleco-server:latest
 docker compose up
