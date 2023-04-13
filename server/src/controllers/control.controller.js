@@ -240,39 +240,16 @@ controlController.postModLab = async (req, res) => {
 // };
 
 // // convergente
-// controlController.GetArduino = async (req, res) => {
-//   const {id}  = req.params;
-//   let response = {
-//      "Estado": [3,true,true],
-//      "Analogico": [1,50,85], 
-//      "Error": 0
-//   }
-//   if (id == 2) {
-//     response = {
-//       "Estado": [3,true,false],
-//       "Analogico": [1,50,85], 
-//       "Error": 0
-//    }
-//   }
-//   console.log(id);
-//   console.log(response);
-//   await res.send(response);
-// };
-// controlController.postArduino = async (req, res) => {
-  
-//   res.status(200).json("correctamente");
-// };
-// divergente
 controlController.GetArduino = async (req, res) => {
   const {id}  = req.params;
   let response = {
-     "Estado": [3,false,true],
+     "Estado": [3,true,true],
      "Analogico": [1,50,85], 
      "Error": 0
   }
   if (id == 2) {
     response = {
-      "Estado": [3,false,false],
+      "Estado": [3,true,false],
       "Analogico": [1,50,85], 
       "Error": 0
    }
@@ -285,4 +262,27 @@ controlController.postArduino = async (req, res) => {
   
   res.status(200).json("correctamente");
 };
+// divergente
+// controlController.GetArduino = async (req, res) => {
+//   const {id}  = req.params;
+//   let response = {
+//      "Estado": [3,false,true],
+//      "Analogico": [1,50,85], 
+//      "Error": 0
+//   }
+//   if (id == 2) {
+//     response = {
+//       "Estado": [3,false,false],
+//       "Analogico": [1,50,85], 
+//       "Error": 0
+//    }
+//   }
+//   console.log(id);
+//   console.log(response);
+//   await res.send(response);
+// };
+// controlController.postArduino = async (req, res) => {
+  
+//   res.status(200).json("correctamente");
+// };
 export { controlController };

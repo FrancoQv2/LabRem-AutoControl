@@ -43,3 +43,7 @@ export const sequelize = new Sequelize(
     dialect: process.env.DB_DIALECT
   }
 );
+
+export function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+} 
