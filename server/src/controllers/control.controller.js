@@ -73,9 +73,11 @@ controlController.getEnsayosUsuario = async (req, res) => {
       const newEnsayo = {}
       newEnsayo.Fecha = ensayo.Fecha
       newEnsayo.Hora = ensayo.Hora
-      newEnsayo.distanciaLente1 = ensayo.datosEntrada.distanciaLente1
-      newEnsayo.distanciaLenteLente = ensayo.datosEntrada.distanciaLenteLente
-      newEnsayo.distanciaPantalla = ensayo.datosEntrada.distanciaPantalla
+      newEnsayo.Rapidez = ensayo.datosEntrada.Rapidez
+      newEnsayo.anguloSalida = ensayo.datosEntrada.anguloSalida
+      newEnsayo.Modificacion = ensayo.datosEntrada.Modificacion
+      newEnsayo.RapidezControl = ensayo.datosEntrada.RapidezControl
+      newEnsayo.anguloSalidaControl = ensayo.datosEntrada.anguloSalidaControl
       dataParsed.push(newEnsayo)
     })
   }
@@ -119,9 +121,11 @@ controlController.getEnsayos = async (req, res) => {
       const newEnsayo = {}
       newEnsayo.Fecha = ensayo.Fecha
       newEnsayo.Hora = ensayo.Hora
-      newEnsayo.distanciaLente1 = ensayo.datosEntrada.distanciaLente1
-      newEnsayo.distanciaLenteLente = ensayo.datosEntrada.distanciaLenteLente
-      newEnsayo.distanciaPantalla = ensayo.datosEntrada.distanciaPantalla
+      newEnsayo.Rapidez = ensayo.datosEntrada.Rapidez
+      newEnsayo.anguloSalida = ensayo.datosEntrada.anguloSalida
+      newEnsayo.Modificacion = ensayo.datosEntrada.Modificacion
+      newEnsayo.RapidezControl = ensayo.datosEntrada.RapidezControl
+      newEnsayo.anguloSalidaControl = ensayo.datosEntrada.anguloSalidaControl
       dataParsed.push(newEnsayo)
     })
   }
@@ -242,6 +246,7 @@ controlController.postModLab = async (req, res) => {
 // // convergente
 controlController.GetArduino = async (req, res) => {
   const {id}  = req.params;
+  
   let response = {
      "Estado": [3,true,true],
      "Analogico": [1,50,85], 

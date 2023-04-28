@@ -23,7 +23,7 @@ estroboscopicoController.postLabEstroboscopico = async (req, res) => {
   } else if (FrecuenciaLuz < 0 || FrecuenciaLuz > 2147483647) {
     res.status(400).json("la frecuencia de la luz es inferior a 0 o superior a 2147483647 (32 bit)");
   } else {
-    const url='http://192.168.100.75:3031/api/control/arduino';//cambiar por ip arduino
+    const url='http://control-dev:3000/api/control/arduino';//cambiar por ip arduino
     const body={
       "Estado" : [3,false,true],
       "Analogico" : [1,1,1]

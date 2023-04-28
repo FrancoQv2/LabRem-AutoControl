@@ -5,7 +5,7 @@ import { posicionController } from "../controllers/posicion.controller.js";
 
 const { getLaboratorios, getLaboratorioById, getEnsayosUsuario, getEnsayos, getDeleteEnsayo, getDeleteLaboratorio, postModLab, postArduino, GetArduino } = controlController;
 const { postLabEstroboscopico, postLabEstroboscopicoSave} = estroboscopicoController;
-const { postLabPosicion, getEnsayosPosicion } = posicionController;
+const { postLabPosicion, postLabPosicionSave } = posicionController;
 
 const controlRouter = express.Router();
 
@@ -16,9 +16,11 @@ const controlRouter = express.Router();
  */
 controlRouter.route("/").get(getLaboratorios);
 
-controlRouter.route("/posicion").get(getEnsayosPosicion).post(postLabPosicion);
+controlRouter.route("/posicion").post(postLabPosicion);
+controlRouter.route("/posicionsave").post(postLabPosicionSave);
 
 controlRouter.route("/estroboscopico").post(postLabEstroboscopico);
+
 controlRouter.route("/estroboscopicosave").post(postLabEstroboscopicoSave);
 
 controlRouter.route("/modificarLab").post(postModLab); //para el grupo de gestion
