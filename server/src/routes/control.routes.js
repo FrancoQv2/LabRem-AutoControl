@@ -1,37 +1,53 @@
-import express from "express";
-import { controlController } from "../controllers/control.controller.js";
-import { estroboscopicoController } from "../controllers/estroboscopico.controller.js";
-import { posicionController } from "../controllers/posicion.controller.js";
+import express from "express"
+import { controlController } from "../controllers/control.controller.js"
+import { submuestreoController } from "../controllers/submuestreo.controller.js"
+import { posicionController } from "../controllers/posicion.controller.js"
 
-const { getLaboratorios, getLaboratorioById, getEnsayosUsuario } = controlController;
-const { postLabEstroboscopico, getEnsayosEstroboscopico } = estroboscopicoController;
-const { postLabPosicion, getEnsayosPosicion } = posicionController;
+const { getLaboratorios, getLaboratorio, getEnsayosUsuario, deleteEnsayo, deleteLaboratorio, postLaboratorio, getEnsayos, updateLaboratorio } = controlController
+const { getEnsayosSubmuestreo, postEnsayoSubmuestreo } = submuestreoController
+const { getEnsayosPosicion, postEnsayoPosicion } = posicionController
 
-const controlRouter = express.Router();
+const controlRouter = express.Router()
 
-/**
- * -----------------------------------------------------
- * Rutas - Laboratorios de control
- * -----------------------------------------------------
- */
-controlRouter.route("/").get(getLaboratorios);
+// -----------------------------------------------------
+// Endpoints - Laboratorios de Automatización y Control
+// -----------------------------------------------------
 
-controlRouter.route("/posicion").get(getEnsayosPosicion).post(postLabPosicion);
+controlRouter.route("/")
+    .get(getLaboratorios)
+    .post(postLaboratorio)
+    
+controlRouter.route("/submuestreo")
+    .get(getEnsayosSubmuestreo)
+    .post(postEnsayoSubmuestreo)
 
-controlRouter.route("/estroboscopico").get(getEnsayosEstroboscopico).post(postLabEstroboscopico);
+controlRouter.route("/posicion")
+    .get(getEnsayosPosicion)
+    .post(postEnsayoPosicion)
 
-/**
- * -----------------------------------------------------
- * Rutas con pasaje de parametro en la URL
- * -----------------------------------------------------
- */
-controlRouter.route("/:idLaboratorio").get(getLaboratorioById);
+// -----------------------------------------------------
+// Endpoints para Gestión
+// -----------------------------------------------------
 
-controlRouter.route("/posicion/:idUsuario").get(getEnsayosUsuario);
+controlRouter.route("/laboratorios/:idLaboratorio")
+    .get(getLaboratorio)
+    .post(updateLaboratorio)
+    .delete(deleteLaboratorio)
 
-controlRouter.route("/estroboscopico/:idUsuario").get(getEnsayosUsuario);
+controlRouter.route("/ensayos/:idLaboratorio")
+    .get(getEnsayos)
 
-controlRouter.route("/:idLaboratorio/:idUsuario").get(getEnsayosUsuario);
+controlRouter.route("/ensayos/:idEnsayo")
+    .delete(deleteEnsayo)
 
+// -----------------------------------------------------
+// Endpoints con pasaje de parametro en la URL
+// -----------------------------------------------------
 
-export default controlRouter;
+controlRouter.route("/:idLaboratorio")
+    .get(getLaboratorio)
+
+controlRouter.route("/:idLaboratorio/:idUsuario")
+    .get(getEnsayosUsuario)
+
+export default controlRouter
