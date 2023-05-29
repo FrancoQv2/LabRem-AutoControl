@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pararse en ../labrem/fisica
+# Pararse en ../labrem/control
 
 # sudo chmod 777 teleco/scripts/create-db.sh
 # ./scripts/create-db.sh
@@ -11,15 +11,15 @@
 # Para entrar a mysql desde el container
 # mysql -u root -p
 
-FILE_CREATION=db-fisica
-FILE_INSERTS=db-fisica-inserts
-FILE_SP=db-fisica-sp
+FILE_CREATION=db-control
+FILE_INSERTS=db-control-inserts
+FILE_SP=db-control-sp
 
-CONTAINER_NAME=fisica-db
+CONTAINER_NAME=control-db
 
 DB_USER=root
 DB_PASSWORD=123456
-DB_NAME=LabRem_Fisica
+DB_NAME=LabRem_Control
 
 
 

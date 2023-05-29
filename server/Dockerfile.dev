@@ -4,7 +4,7 @@ WORKDIR /usr/src/server
 
 # Debe hacer referencia al puerto dentro del container
 ENV SERVER_PORT=3000
-ENV LOCALHOST_PORT=3032
+ENV LOCALHOST_PORT=3031
 
 ENV DB_HOST=control-db
 ENV DB_DIALECT=mysql

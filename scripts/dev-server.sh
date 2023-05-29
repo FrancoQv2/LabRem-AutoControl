@@ -18,7 +18,7 @@ docker run -ti --name $CONTAINER_NAME -v $(pwd)/server:/usr/src/server -p 3031:3
 # docker run -ti --name dev-teleco -v $(pwd)/server:/usr/src/server -p 3030:3000 --network labrem-net dev-server:latest
 
 
-# Fisica
-# cd labrem/fisica
-# docker build -f server/Dockerfile.dev -t dev-fisica:latest server
-# docker run -ti --name dev-fisica -v $(pwd)/server:/usr/src/server -p 3032:3000 --network labrem-net dev-fisica:latest
+# Control
+# cd labrem/control
+# docker build -f server/Dockerfile.dev -t dev-control:latest server
+# docker run -ti --name dev-control -v $(pwd)/server:/usr/src/server -p 3031:3000 --network labrem-net dev-control:latest
