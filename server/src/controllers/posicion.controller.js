@@ -1,101 +1,104 @@
-import { sequelize } from "../index.js";
-import { QueryTypes } from "sequelize";
+import { db } from "../index.js"
 
-const idLaboratorio = 2;
+const idLaboratorio = 2
 
-const posicionController = {};
+const queries = {
+    getEnsayosPosicion: "CALL sp_dameEnsayosPosicion();",
+    postEnsayoPosicion: "CALL sp_crearEnsayo(:idUsuario,:datosEntrada,:datosSalida,:idLaboratorio);"
+}
 
-/**
- * -----------------------------------------------------
- * Function - getEnsayosPosicion
- * -----------------------------------------------------
- */
+const posicionController = {}
+
+// -----------------------------------
+// Métodos GET
+// -----------------------------------
+
 posicionController.getEnsayosPosicion = async (req, res) => {
-  console.log(req.params);
+    console.log("--------------------")
+    console.log(`--> getEnsayosSubmuestreo - ${JSON.stringify(req.params)}`)
 
-  const response = await sequelize.query(
-    "SELECT idUsuario, DATE(fechaHora) AS Fecha, TIME(fechaHora) AS Hora, datosEntrada, datosSalida FROM Ensayos WHERE idLaboratorio = '2';",
-    {
-      replacements: {
-        idLaboratorio: idLaboratorio
-      },
-      type: QueryTypes.SELECT,
-    }
-  );
+    const data = await db.query(
+        queries.getEnsayosPosicion
+    )
 
-  console.log(response);
-  
-  let dataParsed = [];
-  response.map((ensayo)=>{
-    const newEnsayo = {}
-    newEnsayo.Usuario = ensayo.idUsuario
-    newEnsayo.Fecha = ensayo.Fecha
-    newEnsayo.Hora = ensayo.Hora
-    newEnsayo.Estado = ensayo.datosEntrada.Estado
-    newEnsayo.Posicion = ensayo.datosEntrada.Posicion
-    newEnsayo.Velocidad = ensayo.datosEntrada.Velocidad
-    newEnsayo.Tiempo = ensayo.datosEntrada.Tiempo
-    newEnsayo.Exitacion = ensayo.datosEntrada.Exitacion
-    dataParsed.push(newEnsayo)
-  })
-  
-  console.log(dataParsed);
-  await res.send(dataParsed);
-};
+    let dataParsed = []
+    data.map((ensayo) => {
+        const newEnsayo = {}
+        newEnsayo.Usuario   = ensayo.idUsuario
+        newEnsayo.Fecha     = ensayo.Fecha
+        newEnsayo.Hora      = ensayo.Hora
+        newEnsayo.rapidezMotor          = ensayo.datosEntrada.rapidezMotor,
+        newEnsayo.anguloMotor           = ensayo.datosEntrada.anguloMotor,
+        newEnsayo.modificacionesDriver  = ensayo.datosEntrada.modificacionesDriver,
+        newEnsayo.rapidezControlador    = ensayo.datosEntrada.rapidezControlador,
+        newEnsayo.anguloControlador     = ensayo.datosEntrada.anguloControlador
+        dataParsed.push(newEnsayo)
+    })
 
-/**
- * -----------------------------------------------------
- * Function - postLabPosicion
- * -----------------------------------------------------
- */
-posicionController.postLabPosicion = (req, res) => {
-  const { 
-    idUsuario,
-    Estado,
-    Posicion,
-    Velocidad,
-    Tiempo,
-    Exitacion 
-  } = req.body;
+    await res.status(200).send(dataParsed)
+}
 
-  if (Posicion < 0 || Posicion > 100) {
-    res.status(400).json("la posicion es menor a 0 o superior a x");
-  } else if (Velocidad < 0) {//consulta por condiciones perro, por que la velocidad si puede ser negativa al igual que la posicion
-    res.status(400).json("la velocidad es negativa");
-  } else if (Tiempo < 0) {
-    res.status(400).json("el tiempo no puede ser negativo");
-  } else {
+// -----------------------------------
+// Métodos POST
+// -----------------------------------
 
-    const datosEntrada = {
-    Estado: Estado,
-    Posicion: Posicion,
-    Velocidad: Velocidad,
-    Tiempo: Tiempo,
-    Exitacion: Exitacion 
-    };
+posicionController.postEnsayoPosicion = (req, res) => {
+    console.log(`-\n--> postEnsayoPosicion - ${JSON.stringify(req.body)}\n---`)
 
-    const datosSalida = {
-      //le dudo pero entiendo que no tendria salida
-    };
-    
-    try {
-      sequelize.query(
-        "INSERT INTO Ensayos(idUsuario,datosEntrada,datosSalida,idLaboratorio) VALUES(:idUsuario,:datosEntrada,:datosSalida,:idLaboratorio);",
-        {
-          replacements: {
-            idUsuario: idUsuario,
-            datosEntrada: JSON.stringify(datosEntrada),
-            datosSalida: JSON.stringify(datosSalida),
-            idLaboratorio: idLaboratorio,
-          },
-          type: QueryTypes.INSERT,
+    const {
+        idUsuario,
+        Estado,
+        Posicion,
+        Velocidad,
+        Tiempo,
+        Exitacion
+    } = req.body
+
+    if (
+        Posicion < 0 || 
+        Posicion > 100
+    ) {
+        res.status(400)
+            .json("La posicion es menor a 0 o superior a x")
+    } else if (Velocidad < 0) {//consulta por condiciones perro, por que la velocidad si puede ser negativa al igual que la posicion
+        res.status(400)
+            .json("La velocidad es negativa")
+    } else if (Tiempo < 0) {
+        res.status(400)
+            .json("El tiempo no puede ser negativo")
+    } else {
+
+        const datosEntrada = {
+            Estado:     Estado,
+            Posicion:   Posicion,
+            Velocidad:  Velocidad,
+            Tiempo:     Tiempo,
+            Exitacion:  Exitacion
         }
-      );
-      res.status(200).json("Parámetros correctos");
-    } catch (error) {
-      console.error("-> ERROR postLabPosicion:", error);
-    }
-  }
-};
 
-export { posicionController };
+        const datosSalida = {
+            //le dudo pero entiendo que no tendria salida
+        }
+
+        try {
+            db.query(
+                queries.postEnsayoPosicion,
+                {
+                    replacements: {
+                        idUsuario:      idUsuario,
+                        datosEntrada:   JSON.stringify(datosEntrada),
+                        datosSalida:    JSON.stringify(datosSalida),
+                        idLaboratorio:  idLaboratorio
+                    }
+                }
+            )
+
+            res.status(200).json({ msg: "Parámetros correctos. Guardado en DB" })
+        } catch (error) {
+            console.error("-> ERROR postEnsayoPosicion:", error)
+            res.status(500).json({ msg: "Error en postEnsayoPosicion!" })
+        }
+    }
+}
+
+export { posicionController }
