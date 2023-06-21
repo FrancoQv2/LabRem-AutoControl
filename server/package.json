@@ -1,11 +1,11 @@
 {
   "name": "labrem-control",
   "version": "1.0.0",
-  "description": "Servidor Node.js utilizado para las aplicaciones de control",
+  "description": "Servidor Node.js utilizado para las aplicaciones de Control",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
     "dev": "NODE_ENV=development nodemon src/index.js"
   },
   "keywords": [],

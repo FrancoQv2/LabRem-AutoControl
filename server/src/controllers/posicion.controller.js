@@ -27,11 +27,11 @@ posicionController.getEnsayosPosicion = async (req, res) => {
         newEnsayo.Usuario   = ensayo.idUsuario
         newEnsayo.Fecha     = ensayo.Fecha
         newEnsayo.Hora      = ensayo.Hora
-        newEnsayo.rapidezMotor          = ensayo.datosEntrada.rapidezMotor,
         newEnsayo.anguloMotor           = ensayo.datosEntrada.anguloMotor,
+        newEnsayo.rapidezMotor          = ensayo.datosEntrada.rapidezMotor,
         newEnsayo.modificacionesDriver  = ensayo.datosEntrada.modificacionesDriver,
-        newEnsayo.rapidezControlador    = ensayo.datosEntrada.rapidezControlador,
-        newEnsayo.anguloControlador     = ensayo.datosEntrada.anguloControlador
+        newEnsayo.anguloControlador     = ensayo.datosEntrada.anguloControlador,
+        newEnsayo.rapidezControlador    = ensayo.datosEntrada.rapidezControlador
         dataParsed.push(newEnsayo)
     })
 
@@ -47,38 +47,53 @@ posicionController.postEnsayoPosicion = (req, res) => {
 
     const {
         idUsuario,
-        Estado,
-        Posicion,
-        Velocidad,
-        Tiempo,
-        Exitacion
+        anguloMotor,
+        rapidezMotor,
+        modificacionesDriver,
+        anguloControlador,
+        rapidezControlador
     } = req.body
 
     if (
-        Posicion < 0 || 
-        Posicion > 100
+        anguloMotor < -180 || 
+        anguloMotor > 180
     ) {
         res.status(400)
-            .json("La posicion es menor a 0 o superior a x")
-    } else if (Velocidad < 0) {//consulta por condiciones perro, por que la velocidad si puede ser negativa al igual que la posicion
+            .json("El ángulo de salida del motor no está en el rango aceptado")
+    } else if (
+        rapidezMotor < 0
+    ) {
         res.status(400)
-            .json("La velocidad es negativa")
-    } else if (Tiempo < 0) {
+            .json("La rapidez de cambio del motor es inválida")
+    } else if (
+        modificacionesDriver != "Ninguna" && 
+        modificacionesDriver != "Retardos" && 
+        modificacionesDriver != "No linealidades" && 
+        modificacionesDriver != "Polos-ceros extras"
+    ) {
         res.status(400)
-            .json("El tiempo no puede ser negativo")
+            .json("La modificación del driver agregada es inválida")
+    } else if (
+        anguloControlador < -180 || 
+        anguloControlador > 180
+    ) {
+        res.status(400)
+            .json("El ángulo de salida del controlador no está en el rango aceptado")
+    } else if (
+        rapidezControlador < 0
+    ) {
+        res.status(400)
+            .json("La rapidez de cambio del controlador es inválida")
     } else {
-
         const datosEntrada = {
-            Estado:     Estado,
-            Posicion:   Posicion,
-            Velocidad:  Velocidad,
-            Tiempo:     Tiempo,
-            Exitacion:  Exitacion
+            anguloMotor:            anguloMotor,
+            rapidezMotor:           rapidezMotor,
+            modificacionesDriver:   modificacionesDriver,
+            anguloControlador:      anguloControlador,
+            rapidezControlador:     rapidezControlador
         }
 
-        const datosSalida = {
-            //le dudo pero entiendo que no tendria salida
-        }
+        const datosSalida = {}
 
         try {
             db.query(
@@ -93,10 +108,10 @@ posicionController.postEnsayoPosicion = (req, res) => {
                 }
             )
 
-            res.status(200).json({ msg: "Parámetros correctos. Guardado en DB" })
+            res.status(200).json("Parámetros correctos. Guardado en DB")
         } catch (error) {
             console.error("-> ERROR postEnsayoPosicion:", error)
-            res.status(500).json({ msg: "Error en postEnsayoPosicion!" })
+            res.status(500).json("Falló el ensayo!")
         }
     }
 }

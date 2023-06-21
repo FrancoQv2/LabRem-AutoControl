@@ -62,7 +62,7 @@ submuestreoController.getEnsayosSubmuestreo = async (req, res) => {
 // Métodos POST
 // -----------------------------------
 
-submuestreoController.postEnsayoSubmuestreo = (req, res) => {
+submuestreoController.postEnsayoSubmuestreo = async (req, res) => {
     console.log(`-\n--> postEnsayoSubmuestreo - ${JSON.stringify(req.body)}\n---`)
 
     const {
@@ -96,7 +96,7 @@ submuestreoController.postEnsayoSubmuestreo = (req, res) => {
         }
         
         try {
-            db.query(
+            await db.query(
                 queries.postEnsayoSubmuestreo,
                 {
                     replacements: {
@@ -108,11 +108,12 @@ submuestreoController.postEnsayoSubmuestreo = (req, res) => {
                 }
             )
 
-            res.status(200).json({ msg: "Parámetros correctos. Guardado en DB" })
+            res.status(200).json("Parámetros correctos. Guardado en DB")
         } catch (error) {
             console.error("-> ERROR postEnsayoSubmuestreo:", error)
-            res.status(500).json({ msg: "Error en postEnsayoSubmuestreo!" })
+            res.status(500).json("Falló el ensayo!")
         }
+
     }
 }
 

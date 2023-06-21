@@ -8,7 +8,7 @@ import bodyParser from "body-parser"
 import morgan from "morgan"
 import cors from "cors"
 
-import { dbConnection } from "./db/dbconfig.js"
+import { dbConnection } from "./configs/db.config.js"
 
 import controlRouter from "./routes/control.routes.js"
 

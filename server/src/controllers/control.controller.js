@@ -144,6 +144,8 @@ controlController.getEnsayosUsuario = async (req, res) => {
                 })
             }
 
+            console.log(dataParsed);
+
             await res.status(200).json(dataParsed)
         }
     } catch (error) {
