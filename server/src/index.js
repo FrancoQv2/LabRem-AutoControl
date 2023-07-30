@@ -13,7 +13,7 @@ import { dbConnection } from "./configs/db.config.js"
 import controlRouter from "./routes/control.routes.js"
 
 const app = expressServer()
-const PORT = process.env.SERVER_PORT || 3000
+const PORT = 3000
 
 //Necesitamos body-parser para formatear los post en express
 app.use(morgan("dev"))
@@ -29,7 +29,7 @@ app.use("/api/control", controlRouter)
 
 // Levantamos el servidor para que escuche peticiones
 app.listen(PORT, () => {
-  console.log(`LabRem Control - Server on ${process.env.LOCALHOST_PORT}:${PORT}`)
+  console.log(`LabRem Control - Server on ${PORT}`)
 })
 
 export const db = dbConnection
