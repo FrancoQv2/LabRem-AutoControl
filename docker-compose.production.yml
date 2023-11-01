@@ -37,8 +37,6 @@ services:
         COPY package-lock.json .
         RUN npm ci --omit=dev
         COPY . .
-        RUN apt update \
-            && apt install inetutils-ping
         EXPOSE 3000
         CMD ["npm","start"]
     environment:
@@ -63,7 +61,4 @@ services:
           - labrem-apps-server-control
 networks:
   labrem-network:
-    name: labrem-network
-    driver: bridge
-    ipam:
-      driver: default
+    external: true
