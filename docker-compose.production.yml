@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   db:
-    container_name: labrem-apps-db-control
+    container_name: labrem-apps-control-db
     image: mysql:8.0.30
     environment:
       TZ: America/Buenos_Aires
@@ -21,12 +21,12 @@ services:
     networks:
       labrem-network:
         aliases:
-          - labrem-apps-db-control
+          - labrem-apps-control-db
   server:
     depends_on:
       - db
-    container_name: labrem-apps-server-control
-    image: control-server:1.0
+    container_name: labrem-apps-control-server
+    image: labrem-apps-control-server:${VERSION}
     build:
       context: ./server
       no_cache: true
@@ -41,7 +41,7 @@ services:
         CMD ["npm","start"]
     environment:
       NODE_ENV:   production
-      DB_HOST:    labrem-apps-db-control
+      DB_HOST:    labrem-apps-control-db
       DB_DIALECT: mysql
       DB_USER:    ${MYSQL_USER}
       DB_PASS:    ${MYSQL_PASSWORD}
@@ -58,7 +58,7 @@ services:
     networks:
       labrem-network:
         aliases:
-          - labrem-apps-server-control
+          - labrem-apps-control-server
 networks:
   labrem-network:
     external: true
