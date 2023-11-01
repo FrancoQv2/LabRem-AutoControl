@@ -1,4 +1,6 @@
 import { db } from "../index.js"
+import { arduinoPOST, arduinoGET } from "../utils/arduino.js"
+
 
 const idLaboratorio = 1
 
@@ -16,24 +18,7 @@ const submuestreoController = {}
 submuestreoController.getEnsayosSubmuestreo = async (req, res) => {
     console.log("--------------------")
     console.log(`--> getEnsayosSubmuestreo - ${JSON.stringify(req.params)}`)
-
-    // const data = await db.query(
-    //     queries.getEnsayosSubmuestreo
-    // )
-
-    // let dataParsed = []
-    // data.map((ensayo) => {
-    //     const newEnsayo = {}
-    //     newEnsayo.Usuario = ensayo.idUsuario
-    //     newEnsayo.Fecha   = ensayo.Fecha
-    //     newEnsayo.Hora    = ensayo.Hora
-    //     newEnsayo.frecuenciaAgua = ensayo.datosEntrada.frecuenciaAgua
-    //     newEnsayo.frecuenciaLuz  = ensayo.datosEntrada.frecuenciaLuz
-    //     newEnsayo.caidaAgua      = ensayo.datosEntrada.caidaAgua
-    //     dataParsed.push(newEnsayo)
-    // })
-
-    // await res.status(200).send(dataParsed)
+    
     let dataParsed = []
 
     try {        
@@ -46,9 +31,11 @@ submuestreoController.getEnsayosSubmuestreo = async (req, res) => {
             newEnsayo.Usuario = ensayo.idUsuario
             newEnsayo.Fecha   = ensayo.Fecha
             newEnsayo.Hora    = ensayo.Hora
-            newEnsayo.frecuenciaAgua = ensayo.datosEntrada.frecuenciaAgua
-            newEnsayo.frecuenciaLuz  = ensayo.datosEntrada.frecuenciaLuz
-            newEnsayo.caidaAgua      = ensayo.datosEntrada.caidaAgua
+            newEnsayo.kp = ensayo.datosEntrada.kp
+            newEnsayo.ki = ensayo.datosEntrada.ki
+            newEnsayo.kd = ensayo.datosEntrada.kd
+            newEnsayo.init = ensayo.datosEntrada.init
+            newEnsayo.perturbar = ensayo.datosEntrada.perturbar
             dataParsed.push(newEnsayo)
         })
     
@@ -67,35 +54,57 @@ submuestreoController.postEnsayoSubmuestreo = async (req, res) => {
 
     const {
         idUsuario,
-        frecuenciaAgua,
-        frecuenciaLuz,
-        caidaAgua,
+        kp,
+        ki,
+        kd,
+        init,
+        perturbar
     } = req.body
 
     if (
-        frecuenciaAgua < 0 || 
-        frecuenciaAgua > 2147483647
+        kp < 0
     ) {
         res.status(400)
-            .json("La frecuencia de caida del agua es inferior a 0 o superior a 2147483647 (32 bit)")
+            .json("Kp es inferior a 0")
     } else if (
-        frecuenciaLuz < 0 || 
-        frecuenciaLuz > 2147483647
+        ki < 0
     ) {
         res.status(400)
-            .json("La frecuencia de la luz es inferior a 0 o superior a 2147483647 (32 bit)")
+            .json("Ki es inferior a 0")
+    } else if (
+        kd < 0
+    ) {
+        res.status(400)
+            .json("Kd es inferior a 0")
+    } else if (
+        init != 0 && init != 1
+    ) {
+        res.status(400)
+            .json("Init/Stop es incorrecto")
+    } else if (
+        perturbar != 0 && perturbar != 1
+    ) {
+        res.status(400)
+            .json("Perturbar es incorrecto")
     } else {
         const datosEntrada = {
-            frecuenciaAgua: frecuenciaAgua,
-            frecuenciaLuz:  frecuenciaLuz,
-            caidaAgua:      caidaAgua,
+            kp: kp,
+            ki: ki,
+            kd: kd,
+            init: init,
+            perturbar: perturbar
         }
         
-        const datosSalida = {
-            FrecuenciaAparente: 10,
-        }
+        const datosSalida = { }
         
         try {
+            console.log("EN EL TRY");
+            let resPostArduino = await arduinoPOST(kp, ki, kd)
+            console.log(resPostArduino)
+            
+            const resArduino = await arduinoGET()
+            console.log(resArduino)
+
             await db.query(
                 queries.postEnsayoSubmuestreo,
                 {

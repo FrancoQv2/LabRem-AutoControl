@@ -23,8 +23,8 @@ async function arduinoGET() {
 }
 
 // curl -X POST http://10.0.255.11x -H 'Content-Type: text/plain' -d 'POST / HTTP/1.1 {"Estado": [3,true,true],"Analogico": ["central",40,40]}'
-async function arduinoPOST(diafragma, distanciaLente, distanciaPantalla) {
-    const body = `{"Estado": [3,true,true],"Analogico": [${diafragma},${distanciaLente},${distanciaPantalla}]}`
+async function arduinoPOST(kp, ki, kd, init, perturbar) {
+    const body = `{"Estado": [1,1,1],"Constantes": [${kp},${ki},${kd}]},"Contro":[${init},${perturbar}]`
     const curlPOST = `curl -X POST ${URL_ARDUINO} -H 'Content-Type: text/plain' -d '${POST} ${body}'`
 
     return new Promise((resolve, reject) => {

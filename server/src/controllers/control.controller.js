@@ -124,9 +124,11 @@ controlController.getEnsayosUsuario = async (req, res) => {
                     newEnsayo.index = index + 1
                     newEnsayo.Fecha = ensayo.Fecha
                     newEnsayo.Hora  = ensayo.Hora
-                    newEnsayo.frecuenciaAgua = ensayo.datosEntrada.frecuenciaAgua
-                    newEnsayo.frecuenciaLuz  = ensayo.datosEntrada.frecuenciaLuz
-                    newEnsayo.caidaAgua      = ensayo.datosEntrada.caidaAgua
+                    newEnsayo.kp = ensayo.datosEntrada.kp
+                    newEnsayo.ki = ensayo.datosEntrada.ki
+                    newEnsayo.kd = ensayo.datosEntrada.kd
+                    newEnsayo.init = ensayo.datosEntrada.init
+                    newEnsayo.perturbar = ensayo.datosEntrada.perturbar
                     dataParsed.push(newEnsayo)
                 })
             } else if (idLaboratorio == 2) {
