@@ -1,4 +1,5 @@
 import { db } from "../index.js"
+import { arduinoPOST, arduinoGET } from "../utils/arduino.js"
 
 const idLaboratorio = 2
 
@@ -27,11 +28,11 @@ posicionController.getEnsayosPosicion = async (req, res) => {
         newEnsayo.Usuario   = ensayo.idUsuario
         newEnsayo.Fecha     = ensayo.Fecha
         newEnsayo.Hora      = ensayo.Hora
-        newEnsayo.anguloMotor           = ensayo.datosEntrada.anguloMotor,
-        newEnsayo.rapidezMotor          = ensayo.datosEntrada.rapidezMotor,
-        newEnsayo.modificacionesDriver  = ensayo.datosEntrada.modificacionesDriver,
-        newEnsayo.anguloControlador     = ensayo.datosEntrada.anguloControlador,
-        newEnsayo.rapidezControlador    = ensayo.datosEntrada.rapidezControlador
+        newEnsayo.kp = ensayo.datosEntrada.kp
+        newEnsayo.ki = ensayo.datosEntrada.ki
+        newEnsayo.kd = ensayo.datosEntrada.kd
+        newEnsayo.init = ensayo.datosEntrada.init
+        newEnsayo.perturbar = ensayo.datosEntrada.perturbar
         dataParsed.push(newEnsayo)
     })
 
@@ -42,60 +43,59 @@ posicionController.getEnsayosPosicion = async (req, res) => {
 // Métodos POST
 // -----------------------------------
 
-posicionController.postEnsayoPosicion = (req, res) => {
+posicionController.postEnsayoPosicion = async (req, res) => {
     console.log(`-\n--> postEnsayoPosicion - ${JSON.stringify(req.body)}\n---`)
 
     const {
         idUsuario,
-        anguloMotor,
-        rapidezMotor,
-        modificacionesDriver,
-        anguloControlador,
-        rapidezControlador
+        kp,
+        ki,
+        kd,
+        init,
+        perturbar
     } = req.body
 
     if (
-        anguloMotor < -180 || 
-        anguloMotor > 180
+        kp < 0
     ) {
         res.status(400)
-            .json("El ángulo de salida del motor no está en el rango aceptado")
+            .json("Kp es inferior a 0")
     } else if (
-        rapidezMotor < 0
+        ki < 0
     ) {
         res.status(400)
-            .json("La rapidez de cambio del motor es inválida")
+            .json("Ki es inferior a 0")
     } else if (
-        modificacionesDriver != "Ninguna" && 
-        modificacionesDriver != "Retardos" && 
-        modificacionesDriver != "No linealidades" && 
-        modificacionesDriver != "Polos-ceros extras"
+        kd < 0
     ) {
         res.status(400)
-            .json("La modificación del driver agregada es inválida")
+            .json("Kd es inferior a 0")
     } else if (
-        anguloControlador < -180 || 
-        anguloControlador > 180
+        init != 0 && init != 1
     ) {
         res.status(400)
-            .json("El ángulo de salida del controlador no está en el rango aceptado")
+            .json("Init/Stop es incorrecto")
     } else if (
-        rapidezControlador < 0
+        perturbar != 0 && perturbar != 1
     ) {
         res.status(400)
-            .json("La rapidez de cambio del controlador es inválida")
+            .json("Perturbar es incorrecto")
     } else {
         const datosEntrada = {
-            anguloMotor:            anguloMotor,
-            rapidezMotor:           rapidezMotor,
-            modificacionesDriver:   modificacionesDriver,
-            anguloControlador:      anguloControlador,
-            rapidezControlador:     rapidezControlador
+            kp: kp,
+            ki: ki,
+            kd: kd,
+            init: init,
+            perturbar: perturbar
         }
-
-        const datosSalida = {}
+        
+        const datosSalida = { }
 
         try {
+            console.log("EN EL TRY");
+            let resPostArduino = await arduinoPOST(kp, ki, kd)
+            console.log(resPostArduino)
+
             db.query(
                 queries.postEnsayoPosicion,
                 {

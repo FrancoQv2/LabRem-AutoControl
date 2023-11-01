@@ -137,11 +137,11 @@ controlController.getEnsayosUsuario = async (req, res) => {
                     newEnsayo.index = index + 1
                     newEnsayo.Fecha = ensayo.Fecha
                     newEnsayo.Hora  = ensayo.Hora
-                    newEnsayo.rapidezMotor          = ensayo.datosEntrada.rapidezMotor,
-                    newEnsayo.anguloMotor           = ensayo.datosEntrada.anguloMotor,
-                    newEnsayo.modificacionesDriver  = ensayo.datosEntrada.modificacionesDriver,
-                    newEnsayo.rapidezControlador    = ensayo.datosEntrada.rapidezControlador,
-                    newEnsayo.anguloControlador     = ensayo.datosEntrada.anguloControlador
+                    newEnsayo.kp = ensayo.datosEntrada.kp
+                    newEnsayo.ki = ensayo.datosEntrada.ki
+                    newEnsayo.kd = ensayo.datosEntrada.kd
+                    newEnsayo.init = ensayo.datosEntrada.init
+                    newEnsayo.perturbar = ensayo.datosEntrada.perturbar
                     dataParsed.push(newEnsayo)
                 })
             }

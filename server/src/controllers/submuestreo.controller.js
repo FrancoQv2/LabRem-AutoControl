@@ -102,8 +102,8 @@ submuestreoController.postEnsayoSubmuestreo = async (req, res) => {
             let resPostArduino = await arduinoPOST(kp, ki, kd)
             console.log(resPostArduino)
             
-            const resArduino = await arduinoGET()
-            console.log(resArduino)
+            // const resArduino = await arduinoGET()
+            // console.log(resArduino)
 
             await db.query(
                 queries.postEnsayoSubmuestreo,
