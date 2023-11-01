@@ -54,6 +54,9 @@ services:
     restart: always
     stdin_open: true
     tty: true
+    volumes:
+      - /home/labrem/certs/cert.pem:/usr/src/server/src/certs/cert.pem
+      - /home/labrem/certs/privkey.pem:/usr/src/server/src/certs/privkey.pem
     networks:
       labrem-network:
         aliases:
