@@ -1,6 +1,3 @@
-import axios from "axios"
-import { delay } from "./delay.js"
-
 const URL_ARDUINO = process.env.URL_ARDUINO
 
 const GET  = 'GET /  HTTP/1.1'
